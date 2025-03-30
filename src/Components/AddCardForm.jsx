@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { IoClose } from 'react-icons/io5';
+import { FaTimes } from "react-icons/fa";
+
 
 // Helper function to format date for datetime-local inputs.
 const formatDateTimeLocal = (date) => {
@@ -179,10 +180,10 @@ const AddCardForm = ({ onAddCard, onClose }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-transparent 50 backdrop-blur-sm"
     >
       <motion.div
-        className="bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4 border-2 border-purple-700 shadow-xl"
+        className="bg-gray-800 rounded-2xl p-6 w-full max-w-md mx-4 border-2 border-purple-700 shadow-xl"
         variants={formVariants}
         initial="hidden"
         animate="visible"
@@ -199,24 +200,25 @@ const AddCardForm = ({ onAddCard, onClose }) => {
             whileHover={{ scale: 1.3, rotate: 90 }}
             whileTap={{ scale: 0.9 }}
             onClick={onClose}
-            className="relative text-red-400 hover:text-red-500 -top-3 -right-1"
+            className="relative text-red-400 hover:bg-red-500 hover:text-white -top-3 -right-1 rounded-full"
             variants={itemVariants}
           >
-            <IoClose size={28} />
+            <FaTimes className='text-2xl font-bold'/>
           </motion.button>
         </div>
-        <motion.hr className="border-purple-500/30 mb-4" variants={itemVariants} />
+        <motion.hr className="border-purple-500 mb-4" variants={itemVariants} />
         
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Title */}
           <motion.div variants={itemVariants}>
-            <label className="block text-gray-300 font-semibold mb-1">Title</label>
+            <label className="block text-gray-300 font-semibold mb-1 pl-1">Title </label>
             <input 
               type="text"
               name="title"
+              maxLength={10}
               value={formData.title}
               onChange={handleChange}
-              placeholder="Enter card title"
+              placeholder="Enter card title (Max 10 characters)"
               className={`w-full px-3 py-2 bg-gray-700 border ${errors.title ? 'border-red-500' : 'border-gray-600'} rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-200`}
             />
             {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
@@ -224,13 +226,15 @@ const AddCardForm = ({ onAddCard, onClose }) => {
 
           {/* Description */}
           <motion.div variants={itemVariants}>
-            <label className="block text-gray-300 font-semibold mb-1">Description</label>
+            <label className="block text-gray-300 font-semibold mb-1 pl-1">Description</label>
             <textarea
               name="description"
               value={formData.description}
+              maxLength={100}
               onChange={handleChange}
               rows={3}
-              placeholder="Enter card description"
+              placeholder="Enter card description 
+(Max 100 characters)"
               className={`w-full px-3 py-2 bg-gray-700 border ${errors.description ? 'border-red-500' : 'border-gray-600'} rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-200`}
             />
             {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
@@ -238,7 +242,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
 
           {/* Tag Color */}
           <motion.div variants={itemVariants}>
-            <label className="block text-gray-300 font-semibold mb-1">Tag Color</label>
+            <label className="block text-gray-300 font-semibold mb-1 pl-1">Tag Color</label>
             <div className="flex space-x-4 mt-2">
               {['green', 'blue', 'red'].map(color => (
                 <motion.div 
@@ -297,7 +301,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
               className="p-3 border border-dashed border-purple-500/50 rounded-lg bg-gray-700/30"
             >
               <div>
-                <label className="block text-gray-300 font-semibold mb-1">Upload File</label>
+                <label className="block text-gray-300 font-semibold mb-1 pl-1">Upload File</label>
                 <input 
                   type="file"
                   onChange={handleFileUpload}
@@ -306,7 +310,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
                 {errors.file && <p className="text-red-500 text-sm mt-1">{errors.file}</p>}
               </div>
               <div className="mt-2">
-                <label className="block text-gray-300 font-semibold mb-1">File Name</label>
+                <label className="block text-gray-300 font-semibold mb-1 pl-1">File Name</label>
                 <input 
                   type="text"
                   name="fileName"
@@ -341,7 +345,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
               className="p-3 border border-dashed border-purple-500/50 rounded-lg bg-gray-700/30"
             >
               <div>
-                <label className="block text-gray-300 font-semibold mb-1">
+                <label className="block text-gray-300 font-semibold mb-1 pl-1">
                   Details (Max 20 characters)
                 </label>
                 <input 
@@ -357,7 +361,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
                 <p className="text-gray-400 text-xs mt-1">{formData.details.length}/20 characters</p>
               </div>
               <div className="mt-2">
-                <label className="block text-gray-300 font-semibold mb-1">Date & Time</label>
+                <label className="block text-gray-300 font-semibold mb-1 pl-1">Date & Time</label>
                 <input 
                   type="datetime-local"
                   name="dateTime"
