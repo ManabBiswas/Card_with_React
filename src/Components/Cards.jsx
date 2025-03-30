@@ -33,6 +33,19 @@ const Cards = ({ data, onDelete, reference, index }) => {
     }
   };
 
+  const getDownloadBtnColorClasses = (color) => {
+    switch (color) {
+      case 'green':
+        return 'text-green-600';
+      case 'blue':
+        return 'text-blue-600';
+      case 'red':
+        return 'text-red-600';
+      default:
+        return 'text-gray-700 ';
+    }
+  };
+
   const dragVariants = {
     initial: {
       scale: 1,
@@ -72,7 +85,7 @@ const Cards = ({ data, onDelete, reference, index }) => {
       animate={isDeleting ? 'exit' : 'initial'}
       whileDrag="drag"
       whileHover="hover"
-      className="relative flex-shrink-0 m-2 bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl border border-gray-700 p-3 shadow-lg  overflow-hidden cursor-grab active:cursor-grabbing  w-64 h-80  bg-white"
+      className="relative flex-shrink-0 m-2 bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl border border-gray-700 p-3 shadow-lg  overflow-hidden cursor-grab active:cursor-grabbing  w-60 h-80  bg-white"
     >
       {/* Header: Icon and Delete Button */}
       <div>
@@ -99,7 +112,7 @@ const Cards = ({ data, onDelete, reference, index }) => {
       <hr className="border-purple-500 my-2 opacity-50" />
 
       {/* Description */}
-      <p className="text-gray-400 font-medium  text-sm md:text-base mt-2 leading-tight line-clamp-3 transition-colors duration-300">
+      <p className="text-gray-400 font-medium  text-sm md:text-base mt-2 leading-tight transition-colors duration-300">
         {data?.description || "No description provided"}
       </p>
 
@@ -143,7 +156,10 @@ const Cards = ({ data, onDelete, reference, index }) => {
                 </p>
               )}
             </div>
-              <button className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+              <button className={`w-8 h-8 bg-blue-100  ${data?.tag?.tagColor
+          ? getDownloadBtnColorClasses(data?.tag?.tagColor)
+          : getDownloadBtnColorClasses('gray')
+          } rounded-full flex items-center justify-center`}>
                 <FaDownload />
               </button>
           </div>

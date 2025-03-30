@@ -21,7 +21,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    tagColor: 'green',
+    tagColor: 'gray',
     wantToUploadFile: false,
     footerDescriptionTag: false,
     fileName: '',
@@ -180,10 +180,10 @@ const AddCardForm = ({ onAddCard, onClose }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-transparent 50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-transparent 50 backdrop-blur-sm "
     >
       <motion.div
-        className="bg-gray-800 rounded-2xl p-6 w-full max-w-md mx-4 border-2 border-purple-700 shadow-xl"
+         className="bg-gray-800 rounded-2xl p-6 w-full max-w-md mx-4 my-6 border-2 border-purple-700 shadow-xl max-h-[90vh] overflow-y-auto scrollbar-styled"
         variants={formVariants}
         initial="hidden"
         animate="visible"
@@ -215,10 +215,10 @@ const AddCardForm = ({ onAddCard, onClose }) => {
             <input 
               type="text"
               name="title"
-              maxLength={10}
+              maxLength={15}
               value={formData.title}
               onChange={handleChange}
-              placeholder="Enter card title (Max 10 characters)"
+              placeholder="Enter card title (Max 15 characters)"
               className={`w-full px-3 py-2 bg-gray-700 border ${errors.title ? 'border-red-500' : 'border-gray-600'} rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-200`}
             />
             {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
@@ -230,11 +230,11 @@ const AddCardForm = ({ onAddCard, onClose }) => {
             <textarea
               name="description"
               value={formData.description}
-              maxLength={100}
+              maxLength={300}
               onChange={handleChange}
               rows={3}
               placeholder="Enter card description 
-(Max 100 characters)"
+(Max 300 characters)"
               className={`w-full px-3 py-2 bg-gray-700 border ${errors.description ? 'border-red-500' : 'border-gray-600'} rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-200`}
             />
             {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}

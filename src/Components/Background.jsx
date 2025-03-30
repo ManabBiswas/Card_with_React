@@ -13,7 +13,7 @@ const Background = () => {
           ease: "easeInOut"
         }}
       >
-        <h1 className="md:text-9xl text-7xl tracking-tighter leading-none text-zinc-900 font-semibold select-none">
+        <h1 className=" akaya-kanadaka md:text-9xl text-8xl tracking-wider leading-loose text-zinc-900 font-semibold select-none">
           Hello, World!
         </h1>
       </motion.div>
