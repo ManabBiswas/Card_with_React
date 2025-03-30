@@ -1,36 +1,57 @@
 import React, { useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { FaAssistiveListeningSystems, FaFileAlt, FaNotesMedical, FaBook, FaCalendarAlt } from 'react-icons/fa';
-import { IoAdd } from 'react-icons/io5';
+import { AnimatePresence } from 'framer-motion';
+import { FaFileAlt, FaNotesMedical, FaBook, FaCalendarAlt } from 'react-icons/fa';
 import Cards from './Cards';
-import AddCardForm from './AddCardForm';
+import AddCardForm from './AddCardForm'; // Import AddCardForm
+import AddButton from './AddButton';
 
 const Foreground = () => {
   const ref = useRef(null);
-  const [showForm, setShowForm] = useState(false);
-  
-  // Icon mapping for easy reference
-  const iconMap = {
-    'FaFileAlt': FaFileAlt,
-    'FaNotesMedical': FaNotesMedical,
-    'FaBook': FaBook,
-    'FaCalendarAlt': FaCalendarAlt,
-    'FaAssistiveListeningSystems': FaAssistiveListeningSystems
+  const [showForm, setShowForm] = useState(false); // Controls AddCardForm visibility
+  const dragVariants = {
+    initial: {
+      scale: 1,
+      rotate: 0,
+      opacity: 1,
+      boxShadow:
+        '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+    },
+    drag: {
+      scale: 1.05,
+      rotate: 2,
+      boxShadow:
+        '0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1)',
+    },
+    hover: {
+      scale: 1.02,
+      transition: { duration: 0.2 },
+    },
+    exit: {
+      scale: 0.8,
+      opacity: 0,
+      transition: { duration: 0.3 },
+    },
   };
-  
-  // Initial cards with unique IDs
+  // Icon mapping for dynamic selection
+  const iconMap = {
+    FaFileAlt: FaFileAlt,
+    FaNotesMedical: FaNotesMedical,
+    FaBook: FaBook,
+    FaCalendarAlt: FaCalendarAlt,
+  };
+
+  // Initial cards
   const [cards, setCards] = useState([
     {
-      id: 'card-' + Date.now() + '-1',
+      id: 'card-' + crypto.randomUUID(), // Use crypto for unique ID generation
       title: 'Sample Card 1',
       titleColor: 'green',
       description: 'This is sample card 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      icon: FaAssistiveListeningSystems,
+      icon: FaFileAlt,
       download: {
         isOpen: true,
         fileName: 'sample1.pdf',
         fileSize: '1.5 MB',
-        close: false,
       },
       tag: {
         isOpen: false,
@@ -39,14 +60,33 @@ const Foreground = () => {
       },
     },
     {
-      id: 'card-' + Date.now() + '-2',
+      id: 'card-' + crypto.randomUUID(),
       title: 'Sample Card 2',
       titleColor: 'blue',
       description: 'This is sample card 2. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      icon: FaAssistiveListeningSystems,
+      icon: FaBook,
       download: {
         isOpen: true,
-        fileName: 'sample2.pdf',
+        filePreview: "/icon.png",
+        fileName: 'icon.png',
+        fileSize: '0.1 MB',
+        close: true,
+      },
+      tag: {
+        isOpen: false,
+        tagDetails: ['Created by: Sample User', 'Last updated: 28/03/2025'],
+        tagColor: 'red',
+      },
+    },
+    {
+      id: 'card-' + crypto.randomUUID(),
+      title: 'Sample Card 3',
+      titleColor: 'red',
+      description: 'A comprehensive overview of the project with extended description showcasing multiple features.',
+      icon: FaBook,
+      download: {
+        isOpen: true,
+        fileName: 'sample3.pdf',
         fileSize: '1.5 MB',
         close: true,
       },
@@ -57,29 +97,11 @@ const Foreground = () => {
       },
     },
     {
-      id: 'card-' + Date.now() + '-3',
-      title: 'Sample Card 3',
-      titleColor: 'red',
-      description: 'A comprehensive overview of the project with extended description showcasing multiple features.',
-      icon: FaAssistiveListeningSystems,
-      download: {
-        isOpen: true,
-        fileName: 'sample3.pdf',
-        fileSize: '1.5 MB',
-        close: true,
-      },
-      tag: {
-        isOpen: false,
-        tagDetails: ['Created by: Sample User', 'Last updated: 28/03/2025'],
-        tagColor: 'green',
-      },
-    },
-    {
-      id: 'card-' + Date.now() + '-4',
+      id: 'card-' + crypto.randomUUID(),
       title: 'Sample Card 4',
       titleColor: 'green',
       description: 'Exploring the intricacies of modern web development and design principles.',
-      icon: FaAssistiveListeningSystems,
+      icon: FaCalendarAlt,
       download: {
         isOpen: false,
         fileSize: '1.5 MB',
@@ -88,66 +110,52 @@ const Foreground = () => {
       tag: {
         isOpen: true,
         tagDetails: ['Created by: Sample User', 'Last updated: 28/03/2025'],
-        tagColor: 'red',
+        tagColor: '',
       },
     },
+
   ]);
 
-  // Function to generate a unique ID
-  const generateUniqueId = () => {
-    return 'card-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-  };
-
+  // Function to add a new card
   const handleAddCard = (newCard) => {
-    // Generate a unique ID using our function
-    const newId = generateUniqueId();
-    
-    // Select the icon based on iconType or use default
-    const selectedIcon = newCard.iconType 
-      ? iconMap[newCard.iconType] 
-      : FaAssistiveListeningSystems;
-    
-    // Transform newCard with the ID
     const card = {
-      id: newId,
-      title: newCard.title,
+      id: 'card-' + crypto.randomUUID(),
+      title: newCard.title || 'Untitled',
       titleColor: newCard.titleColor || 'gray',
-      description: newCard.description,
-      icon: selectedIcon,
+      description: newCard.description || 'No description provided.',
+      icon: iconMap[newCard.iconType] || FaFileAlt,
       download: newCard.upload
         ? {
-            isOpen: true,
-            fileName: newCard.upload.fileName,
-            fileSize: newCard.upload.fileSize,
-            filePreview: newCard.upload.filePreview,
-            close: false,
-          }
+          isOpen: true,
+          fileName: newCard.upload.fileName,
+          fileSize: newCard.upload.fileSize,
+          filePreview: newCard.upload.filePreview,
+        }
         : { isOpen: false },
       tag: {
-        isOpen: newCard.footerDetails ? true : false,
+        isOpen: !!newCard.footerDetails,
         tagDetails: newCard.footerDetails
           ? [
-              newCard.footerDetails.details,
-              new Date(newCard.footerDetails.dateTime).toLocaleString(),
-            ]
+            newCard.footerDetails.details,
+            new Date(newCard.footerDetails.dateTime).toLocaleString(),
+          ]
           : [],
         tagColor: newCard.tagColor || 'green',
       },
     };
 
-    // Append the new card
-    setCards([...cards, card]);
+    setCards((prevCards) => [...prevCards, card]); // Append new card to state
+    setShowForm(false); // Close the form after adding
   };
 
-  // Delete function using the card ID
+  // Function to delete a card by ID
   const handleDeleteCard = (cardId) => {
-    // Filter out the card with the specified ID
-    const updatedCards = cards.filter(card => card.id !== cardId);
-    setCards(updatedCards);
+    setCards((prevCards) => prevCards.filter((card) => card.id !== cardId));
   };
 
   return (
-    <>
+    <div>
+      {/* Cards List */}
       <div
         ref={ref}
         className="fixed top-0 left-0 z-10 w-full h-full flex gap-5 flex-wrap p-3 md:p-5 overflow-y-auto"
@@ -155,41 +163,31 @@ const Foreground = () => {
         <AnimatePresence>
           {cards.map((item) => (
             <Cards
-              key={item.id} // Use the card's ID as the key
+              key={item.id}
               data={item}
               reference={ref}
-              cardId={item.id} // Pass the ID to the component
+              dragVariants={dragVariants}
               onDelete={handleDeleteCard}
             />
           ))}
         </AnimatePresence>
       </div>
 
-      <motion.button
-        onClick={() => setShowForm(true)}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full flex items-center justify-center shadow-lg z-20"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        initial={{ scale: 0, rotate: -180 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{
-          type: "spring",
-          stiffness: 260,
-          damping: 20,
-        }}
-      >
-        <IoAdd className="text-white text-2xl" />
-      </motion.button>
+      {/* Add Button */}
+      <AddButton onClick={() => setShowForm(true)}
+        dragVariants={dragVariants} reference={ref}
+      />
 
+      {/* Add Card Form */}
       <AnimatePresence>
         {showForm && (
           <AddCardForm
             onAddCard={handleAddCard}
-            onClose={() => setShowForm(false)}
+            onClose={() => setShowForm(false)} // Close the form
           />
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 };
 

@@ -192,6 +192,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-transparent 50 backdrop-blur-sm "
+      
     >
       <motion.div
         className="bg-gray-800 rounded-2xl p-6 w-full max-w-md mx-4 my-6 border-2 border-purple-700 shadow-xl max-h-[90vh] overflow-y-auto scrollbar-styled"

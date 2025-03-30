@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaTimes, FaDownload } from "react-icons/fa";
 
-const Cards = ({ data, onDelete, reference, index }) => {
+const Cards = ({ data, onDelete, reference, index, dragVariants }) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   // Guard against multiple clicks on the delete button.
@@ -69,30 +69,7 @@ const Cards = ({ data, onDelete, reference, index }) => {
     }
   };
 
-  const dragVariants = {
-    initial: {
-      scale: 1,
-      rotate: 0,
-      opacity: 1,
-      boxShadow:
-        '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-    },
-    drag: {
-      scale: 1.05,
-      rotate: 2,
-      boxShadow:
-        '0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1)',
-    },
-    hover: {
-      scale: 1.02,
-      transition: { duration: 0.2 },
-    },
-    exit: {
-      scale: 0.8,
-      opacity: 0,
-      transition: { duration: 0.3 },
-    },
-  };
+  
 
   return (
     <motion.div
