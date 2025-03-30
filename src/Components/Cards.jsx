@@ -4,21 +4,19 @@ import { FaAssistiveListeningSystems } from 'react-icons/fa';
 import { GiCloudDownload } from 'react-icons/gi';
 import { IoClose } from 'react-icons/io5';
 
-const Cards = ({ data, onDelete, reference }) => {
-  const [isDeleted, setIsDeleted] = useState(false);
+const Cards = ({ data, onDelete, reference, index }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Guard against multiple clicks on the delete button.
   const handleDelete = () => {
-    if (isDeleted) return; // Prevent further action if already deleting.
-    setIsDeleted(true);
+    if (isDeleting) return; // Prevent further action if already deleting.
+    setIsDeleting(true);
     if (onDelete) {
       setTimeout(() => {
-        onDelete();
+        onDelete(index);
       }, 300); // Wait for the exit animation to finish.
     }
   };
-
-  if (isDeleted) return null;
 
   // Return appropriate background classes for tag colors.
   const getTagColorClasses = (color) => {
@@ -70,7 +68,7 @@ const Cards = ({ data, onDelete, reference }) => {
       }}
       variants={dragVariants}
       initial="initial"
-      animate={isDeleted ? 'exit' : 'initial'}
+      animate={isDeleting ? 'exit' : 'initial'}
       whileDrag="drag"
       whileHover="hover"
       className="relative flex-shrink-0 m-2 w-36 h-48 md:w-48 md:h-64 bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl border border-gray-700 p-3 shadow-lg transition-all duration-300 overflow-hidden cursor-grab active:cursor-grabbing"
@@ -91,14 +89,14 @@ const Cards = ({ data, onDelete, reference }) => {
 
       {/* Title */}
       <h1 className="text-white font-bold text-lg md:text-xl mt-2 tracking-wide line-clamp-1 transition-colors duration-300">
-        {data?.title}
+        {data?.title || "Untitled"}
       </h1>
 
       <hr className="border-purple-500 my-2 opacity-50" />
 
       {/* Description */}
       <p className="text-gray-400 font-medium text-sm md:text-base mt-2 leading-tight line-clamp-3 transition-colors duration-300">
-        {data?.description}
+        {data?.description || "No description provided"}
       </p>
 
       {/* Footer Section */}
@@ -106,7 +104,7 @@ const Cards = ({ data, onDelete, reference }) => {
         className={`absolute bottom-0 left-0 w-full p-2 ${
           data?.tag?.tagColor
             ? getTagColorClasses(data?.tag?.tagColor)
-            : 'bg-gradient-to-r from-gray-700 to-gray-600'
+            : getTagColorClasses('green')
         } transition-opacity duration-300`}
       >
         {/* Tag Details */}

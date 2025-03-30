@@ -29,6 +29,8 @@ const AddCardForm = ({ onAddCard, onClose }) => {
     details: '',
     dateTime: formatDateTimeLocal(new Date()),
   });
+  
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -52,15 +54,35 @@ const AddCardForm = ({ onAddCard, onClose }) => {
         [name]: type === 'checkbox' ? checked : value,
       });
     }
+    
+    // Clear error for this field when changed
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
   };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > MAX_FILE_SIZE_BYTES) {
-        alert(`File size exceeds the maximum limit of ${MAX_FILE_SIZE_MB} MB`);
+        setErrors({
+          ...errors,
+          file: `File size exceeds the maximum limit of ${MAX_FILE_SIZE_MB} MB`
+        });
         return;
       }
+      
+      // Clear file error if exists
+      if (errors.file) {
+        setErrors({
+          ...errors,
+          file: ''
+        });
+      }
+      
       setFormData({
         ...formData,
         fileName: file.name,
@@ -70,8 +92,35 @@ const AddCardForm = ({ onAddCard, onClose }) => {
     }
   };
 
+  const validate = () => {
+    const newErrors = {};
+    
+    if (!formData.title.trim()) {
+      newErrors.title = 'Title is required';
+    }
+    
+    if (!formData.description.trim()) {
+      newErrors.description = 'Description is required';
+    }
+    
+    if (formData.wantToUploadFile && !formData.fileName) {
+      newErrors.fileName = 'File name is required';
+    }
+    
+    if (formData.footerDescriptionTag && !formData.details.trim()) {
+      newErrors.details = 'Details are required';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    if (!validate()) {
+      return;
+    }
 
     // Prepare new card data based on form selections.
     const newCard = {
@@ -96,6 +145,34 @@ const AddCardForm = ({ onAddCard, onClose }) => {
     onAddCard(newCard);
     onClose();
   };
+  
+  const formVariants = {
+    hidden: { opacity: 0, scale: 0.9, y: 20 },
+    visible: { 
+      opacity: 1, 
+      scale: 1, 
+      y: 0,
+      transition: { 
+        type: "spring", 
+        damping: 25, 
+        stiffness: 300,
+        staggerChildren: 0.07
+      }
+    },
+    exit: { 
+      opacity: 0, 
+      scale: 0.9, 
+      y: 20,
+      transition: { 
+        duration: 0.2 
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 }
+  };
 
   return (
     <motion.div
@@ -106,69 +183,83 @@ const AddCardForm = ({ onAddCard, onClose }) => {
     >
       <motion.div
         className="bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4 border-2 border-purple-700 shadow-xl"
-        initial={{ scale: 0.9, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.9, y: 20 }}
-        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        variants={formVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-white text-center">Add New Card</h2>
+          <motion.h2 
+            className="text-2xl font-bold text-white text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400"
+            variants={itemVariants}
+          >
+            Add New Card
+          </motion.h2>
           <motion.button
-            whileHover={{ scale: 1.3 }}
+            whileHover={{ scale: 1.3, rotate: 90 }}
             whileTap={{ scale: 0.9 }}
             onClick={onClose}
             className="relative text-red-400 hover:text-red-500 -top-3 -right-1"
+            variants={itemVariants}
           >
             <IoClose size={28} />
           </motion.button>
         </div>
-        <hr className="text-white" />
+        <motion.hr className="border-purple-500/30 mb-4" variants={itemVariants} />
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Title */}
-          <div>
+          <motion.div variants={itemVariants}>
             <label className="block text-gray-300 font-semibold mb-1">Title</label>
             <input 
               type="text"
               name="title"
               value={formData.title}
               onChange={handleChange}
-              required
               placeholder="Enter card title"
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className={`w-full px-3 py-2 bg-gray-700 border ${errors.title ? 'border-red-500' : 'border-gray-600'} rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-200`}
             />
-          </div>
+            {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
+          </motion.div>
 
           {/* Description */}
-          <div>
+          <motion.div variants={itemVariants}>
             <label className="block text-gray-300 font-semibold mb-1">Description</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              required
               rows={3}
               placeholder="Enter card description"
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className={`w-full px-3 py-2 bg-gray-700 border ${errors.description ? 'border-red-500' : 'border-gray-600'} rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-200`}
             />
-          </div>
+            {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
+          </motion.div>
 
           {/* Tag Color */}
-          <div>
+          <motion.div variants={itemVariants}>
             <label className="block text-gray-300 font-semibold mb-1">Tag Color</label>
-            <select
-              name="tagColor"
-              value={formData.tagColor}
-              onChange={handleChange}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              <option value="green">Green</option>
-              <option value="blue">Blue</option>
-              <option value="red">Red</option>
-            </select>
-          </div>
+            <div className="flex space-x-4 mt-2">
+              {['green', 'blue', 'red'].map(color => (
+                <motion.div 
+                  key={color}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setFormData({...formData, tagColor: color})}
+                  className={`w-10 h-10 rounded-full cursor-pointer transition-transform border-2 ${
+                    formData.tagColor === color ? 'border-white' : 'border-transparent'
+                  } ${
+                    color === 'green' ? 'bg-gradient-to-r from-green-600 to-green-500' :
+                    color === 'blue' ? 'bg-gradient-to-r from-blue-600 to-blue-500' :
+                    'bg-gradient-to-r from-red-600 to-red-500'
+                  }`}
+                />
+              ))}
+            </div>
+          </motion.div>
 
           {/* Checkbox Options for mutually exclusive features */}
-          <div className="flex space-x-6">
+          <motion.div className="flex space-x-6" variants={itemVariants}>
             <div className="flex items-center">
               <input 
                 type="checkbox"
@@ -179,7 +270,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
                 className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-500 rounded bg-gray-700"
               />
               <label htmlFor="wantToUploadFile" className="ml-2 text-gray-300 font-semibold">
-                Want to Upload File
+                Upload File
               </label>
             </div>
             <div className="flex items-center">
@@ -192,14 +283,19 @@ const AddCardForm = ({ onAddCard, onClose }) => {
                 className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-500 rounded bg-gray-700"
               />
               <label htmlFor="footerDescriptionTag" className="ml-2 text-gray-300 font-semibold">
-                Footer Description Tag
+                Add Footer Details
               </label>
             </div>
-          </div>
+          </motion.div>
 
           {/* Conditional Fields for File Upload */}
           {formData.wantToUploadFile && (
-            <>
+            <motion.div 
+              variants={itemVariants}
+              initial="hidden" 
+              animate="visible"
+              className="p-3 border border-dashed border-purple-500/50 rounded-lg bg-gray-700/30"
+            >
               <div>
                 <label className="block text-gray-300 font-semibold mb-1">Upload File</label>
                 <input 
@@ -207,37 +303,43 @@ const AddCardForm = ({ onAddCard, onClose }) => {
                   onChange={handleFileUpload}
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
+                {errors.file && <p className="text-red-500 text-sm mt-1">{errors.file}</p>}
               </div>
-              <div>
+              <div className="mt-2">
                 <label className="block text-gray-300 font-semibold mb-1">File Name</label>
                 <input 
                   type="text"
                   name="fileName"
                   value={formData.fileName}
                   onChange={handleChange}
-                  required
                   placeholder="Enter file name"
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className={`w-full px-3 py-2 bg-gray-700 border ${errors.fileName ? 'border-red-500' : 'border-gray-600'} rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500`}
                 />
+                {errors.fileName && <p className="text-red-500 text-sm mt-1">{errors.fileName}</p>}
               </div>
               {formData.fileSize && (
-                <p className="text-gray-300">File Size: {formData.fileSize}</p>
+                <p className="text-gray-300 mt-2">File Size: {formData.fileSize}</p>
               )}
               {formData.filePreview && (
-                <div className="mt-2">
+                <div className="mt-3">
                   <img 
                     src={formData.filePreview}
                     alt="File Preview"
-                    className="max-h-40 object-contain"
+                    className="max-h-40 object-contain mx-auto rounded-lg"
                   />
                 </div>
               )}
-            </>
+            </motion.div>
           )}
 
           {/* Conditional Fields for Footer Description Tag */}
           {formData.footerDescriptionTag && (
-            <>
+            <motion.div 
+              variants={itemVariants}
+              initial="hidden" 
+              animate="visible"
+              className="p-3 border border-dashed border-purple-500/50 rounded-lg bg-gray-700/30"
+            >
               <div>
                 <label className="block text-gray-300 font-semibold mb-1">
                   Details (Max 20 characters)
@@ -248,27 +350,30 @@ const AddCardForm = ({ onAddCard, onClose }) => {
                   value={formData.details}
                   onChange={handleChange}
                   maxLength={20}
-                  required
                   placeholder="Enter details"
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className={`w-full px-3 py-2 bg-gray-700 border ${errors.details ? 'border-red-500' : 'border-gray-600'} rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500`}
                 />
+                {errors.details && <p className="text-red-500 text-sm mt-1">{errors.details}</p>}
+                <p className="text-gray-400 text-xs mt-1">{formData.details.length}/20 characters</p>
               </div>
-              <div>
+              <div className="mt-2">
                 <label className="block text-gray-300 font-semibold mb-1">Date & Time</label>
                 <input 
                   type="datetime-local"
                   name="dateTime"
                   value={formData.dateTime}
                   onChange={handleChange}
-                  required
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
-            </>
+            </motion.div>
           )}
 
           {/* Submit Button */}
-          <div className="pt-2">
+          <motion.div 
+            variants={itemVariants}
+            className="pt-2"
+          >
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -277,7 +382,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
             >
               Add Card
             </motion.button>
-          </div>
+          </motion.div>
         </form>
       </motion.div>
     </motion.div>
