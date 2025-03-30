@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { IoAdd } from 'react-icons/io5';
+import { FaPlus } from "react-icons/fa6";
 
 const AddButton = ({ onClick }) => {
   return (
     <motion.button
       onClick={onClick}
-      className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full flex items-center justify-center shadow-lg z-20"
+      className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-purple-600 to-purple-300 rounded-full flex items-center justify-center shadow-lg z-100"
       whileHover={{ scale: 1.5 }}
       whileTap={{ scale: 0.9 }}
       initial={{ scale: 0, rotate: -180 }}
@@ -16,8 +16,9 @@ const AddButton = ({ onClick }) => {
         stiffness: 260,
         damping: 20
       }}
-    >
-      <IoAdd className="text-white text-2xl font-bold" />
+      aria-labelledby="add-item-label"
+    ><span className="sr-only">Add New Item</span> {/* Screen-reader only */}
+      <FaPlus  className="text-white text-3xl font-bold" />
     </motion.button>
   );
 };

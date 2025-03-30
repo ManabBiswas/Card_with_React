@@ -119,6 +119,7 @@ const Cards = ({ data, onDelete, reference, index }) => {
           }}
           onClick={handleDelete}
           className="absolute top-2 right-2 z-10 w-7 h-7 bg-red-500 text-white rounded-full flex items-center justify-center shadow-md hover:bg-red-600 transition-colors hover:cursor-pointer"
+          aria-labelledby="delete-card-label"
         >
           <FaTimes />
         </motion.button>
@@ -185,7 +186,8 @@ const Cards = ({ data, onDelete, reference, index }) => {
               data?.tag?.tagColor
                 ? getDownloadBtnColorClasses(data?.tag?.tagColor)
                 : getDownloadBtnColorClasses('gray')
-            } rounded-full flex items-center justify-center`}>
+            } rounded-full flex items-center justify-center`}
+            aria-labelledby="download-file-label">
               <FaDownload />
             </button>
           </div>
