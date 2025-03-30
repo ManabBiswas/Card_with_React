@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaTimes } from "react-icons/fa";
+import {  FaFileAlt, FaNotesMedical, FaBook, FaCalendarAlt } from "react-icons/fa";
 
 
 // Helper function to format date for datetime-local inputs.
@@ -19,7 +20,9 @@ const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 const AddCardForm = ({ onAddCard, onClose }) => {
   const [formData, setFormData] = useState({
+    // iconType: 'FaFileAlt', 
     title: '',
+    titleColor: 'gray',
     description: '',
     tagColor: 'gray',
     wantToUploadFile: false,
@@ -30,8 +33,15 @@ const AddCardForm = ({ onAddCard, onClose }) => {
     details: '',
     dateTime: formatDateTimeLocal(new Date()),
   });
-  
+
   const [errors, setErrors] = useState({});
+
+  const icons = {
+    FaFileAlt: FaFileAlt,
+    FaNotesMedical: FaNotesMedical,
+    FaBook: FaBook,
+    FaCalendarAlt: FaCalendarAlt
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -55,7 +65,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
         [name]: type === 'checkbox' ? checked : value,
       });
     }
-    
+
     // Clear error for this field when changed
     if (errors[name]) {
       setErrors({
@@ -75,7 +85,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
         });
         return;
       }
-      
+
       // Clear file error if exists
       if (errors.file) {
         setErrors({
@@ -83,7 +93,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
           file: ''
         });
       }
-      
+
       setFormData({
         ...formData,
         fileName: file.name,
@@ -95,30 +105,30 @@ const AddCardForm = ({ onAddCard, onClose }) => {
 
   const validate = () => {
     const newErrors = {};
-    
+
     if (!formData.title.trim()) {
       newErrors.title = 'Title is required';
     }
-    
+
     if (!formData.description.trim()) {
       newErrors.description = 'Description is required';
     }
-    
+
     if (formData.wantToUploadFile && !formData.fileName) {
       newErrors.fileName = 'File name is required';
     }
-    
+
     if (formData.footerDescriptionTag && !formData.details.trim()) {
       newErrors.details = 'Details are required';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!validate()) {
       return;
     }
@@ -126,50 +136,51 @@ const AddCardForm = ({ onAddCard, onClose }) => {
     // Prepare new card data based on form selections.
     const newCard = {
       title: formData.title,
+      titleColor: formData.titleColor,
       description: formData.description,
       tagColor: formData.tagColor,
       upload: formData.wantToUploadFile
         ? {
-            fileName: formData.fileName,
-            fileSize: formData.fileSize,
-            filePreview: formData.filePreview,
-          }
+          fileName: formData.fileName,
+          fileSize: formData.fileSize,
+          filePreview: formData.filePreview,
+        }
         : null,
       footerDetails: formData.footerDescriptionTag
         ? {
-            details: formData.details,
-            dateTime: formData.dateTime,
-          }
+          details: formData.details,
+          dateTime: formData.dateTime,
+        }
         : null,
     };
 
     onAddCard(newCard);
     onClose();
   };
-  
+
   const formVariants = {
     hidden: { opacity: 0, scale: 0.9, y: 20 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
+    visible: {
+      opacity: 1,
+      scale: 1,
       y: 0,
-      transition: { 
-        type: "spring", 
-        damping: 25, 
+      transition: {
+        type: "spring",
+        damping: 25,
         stiffness: 300,
         staggerChildren: 0.07
       }
     },
-    exit: { 
-      opacity: 0, 
-      scale: 0.9, 
+    exit: {
+      opacity: 0,
+      scale: 0.9,
       y: 20,
-      transition: { 
-        duration: 0.2 
+      transition: {
+        duration: 0.2
       }
     }
   };
-  
+
   const itemVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0 }
@@ -183,14 +194,14 @@ const AddCardForm = ({ onAddCard, onClose }) => {
       className="fixed inset-0 z-50 flex items-center justify-center bg-transparent 50 backdrop-blur-sm "
     >
       <motion.div
-         className="bg-gray-800 rounded-2xl p-6 w-full max-w-md mx-4 my-6 border-2 border-purple-700 shadow-xl max-h-[90vh] overflow-y-auto scrollbar-styled"
+        className="bg-gray-800 rounded-2xl p-6 w-full max-w-md mx-4 my-6 border-2 border-purple-700 shadow-xl max-h-[90vh] overflow-y-auto scrollbar-styled"
         variants={formVariants}
         initial="hidden"
         animate="visible"
         exit="exit"
       >
         <div className="flex justify-between items-center mb-4">
-          <motion.h2 
+          <motion.h2
             className="text-2xl font-bold text-white text-center bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400"
             variants={itemVariants}
           >
@@ -203,16 +214,16 @@ const AddCardForm = ({ onAddCard, onClose }) => {
             className="relative text-red-400 hover:bg-red-500 hover:text-white -top-3 -right-1 rounded-full"
             variants={itemVariants}
           >
-            <FaTimes className='text-2xl font-bold'/>
+            <FaTimes className='text-2xl font-bold' />
           </motion.button>
         </div>
         <motion.hr className="border-purple-500 mb-4" variants={itemVariants} />
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Title */}
           <motion.div variants={itemVariants}>
             <label className="block text-gray-300 font-semibold mb-1 pl-1">Title </label>
-            <input 
+            <input
               type="text"
               name="title"
               maxLength={15}
@@ -222,6 +233,48 @@ const AddCardForm = ({ onAddCard, onClose }) => {
               className={`w-full px-3 py-2 bg-gray-700 border ${errors.title ? 'border-red-500' : 'border-gray-600'} rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-200`}
             />
             {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
+          </motion.div>
+
+
+          {/* Icon Type Selection */}
+          <motion.div variants={itemVariants}>
+            <label className="block text-gray-300 font-semibold mb-1 pl-1">Icon Type</label>
+            <div className="grid grid-cols-4 gap-3 mt-2">
+              {Object.entries(icons).map(([iconName, IconComponent]) => (
+                <motion.div
+                  key={iconName}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setFormData({ ...formData, iconType: iconName })}
+                  className={`flex flex-col items-center justify-center p-2 rounded-lg cursor-pointer transition-transform border ${formData.iconType === iconName ? 'border-purple-500 bg-gray-700' : 'border-gray-600 bg-gray-800'}`}
+                >
+                  <IconComponent className={`text-xl ${formData.iconType === iconName ? 'text-purple-400' : 'text-gray-400'}`} />
+                  <span className="text-xs mt-1 text-gray-400">{iconName.replace('Fa', '')}</span>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+
+
+          {/* Title Color */}
+          <motion.div variants={itemVariants}>
+            <label className="block text-gray-300 font-semibold mb-1 pl-1">Title Color</label>
+            <div className="flex space-x-4 mt-2">
+              {['green', 'blue', 'red'].map(titleColor => (
+                <motion.div
+                  key={titleColor}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setFormData({ ...formData, titleColor: titleColor })}
+                  className={`w-10 h-10 rounded-full cursor-pointer transition-transform border-2 ${formData.titleColor === titleColor ? 'border-white' : 'border-transparent'
+                    } ${titleColor === 'green' ? 'bg-gradient-to-r from-green-600 to-green-500' :
+                      titleColor === 'blue' ? 'bg-gradient-to-r from-blue-600 to-blue-500' :
+                        'bg-gradient-to-r from-red-600 to-red-500'
+                    }`}
+                />
+              ))}
+            </div>
           </motion.div>
 
           {/* Description */}
@@ -245,18 +298,16 @@ const AddCardForm = ({ onAddCard, onClose }) => {
             <label className="block text-gray-300 font-semibold mb-1 pl-1">Tag Color</label>
             <div className="flex space-x-4 mt-2">
               {['green', 'blue', 'red'].map(color => (
-                <motion.div 
+                <motion.div
                   key={color}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setFormData({...formData, tagColor: color})}
-                  className={`w-10 h-10 rounded-full cursor-pointer transition-transform border-2 ${
-                    formData.tagColor === color ? 'border-white' : 'border-transparent'
-                  } ${
-                    color === 'green' ? 'bg-gradient-to-r from-green-600 to-green-500' :
-                    color === 'blue' ? 'bg-gradient-to-r from-blue-600 to-blue-500' :
-                    'bg-gradient-to-r from-red-600 to-red-500'
-                  }`}
+                  onClick={() => setFormData({ ...formData, tagColor: color })}
+                  className={`w-10 h-10 rounded-full cursor-pointer transition-transform border-2 ${formData.tagColor === color ? 'border-white' : 'border-transparent'
+                    } ${color === 'green' ? 'bg-gradient-to-r from-green-600 to-green-500' :
+                      color === 'blue' ? 'bg-gradient-to-r from-blue-600 to-blue-500' :
+                        'bg-gradient-to-r from-red-600 to-red-500'
+                    }`}
                 />
               ))}
             </div>
@@ -265,7 +316,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
           {/* Checkbox Options for mutually exclusive features */}
           <motion.div className="flex space-x-6" variants={itemVariants}>
             <div className="flex items-center">
-              <input 
+              <input
                 type="checkbox"
                 id="wantToUploadFile"
                 name="wantToUploadFile"
@@ -278,7 +329,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
               </label>
             </div>
             <div className="flex items-center">
-              <input 
+              <input
                 type="checkbox"
                 id="footerDescriptionTag"
                 name="footerDescriptionTag"
@@ -294,15 +345,15 @@ const AddCardForm = ({ onAddCard, onClose }) => {
 
           {/* Conditional Fields for File Upload */}
           {formData.wantToUploadFile && (
-            <motion.div 
+            <motion.div
               variants={itemVariants}
-              initial="hidden" 
+              initial="hidden"
               animate="visible"
               className="p-3 border border-dashed border-purple-500/50 rounded-lg bg-gray-700/30"
             >
               <div>
                 <label className="block text-gray-300 font-semibold mb-1 pl-1">Upload File</label>
-                <input 
+                <input
                   type="file"
                   onChange={handleFileUpload}
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -311,7 +362,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
               </div>
               <div className="mt-2">
                 <label className="block text-gray-300 font-semibold mb-1 pl-1">File Name</label>
-                <input 
+                <input
                   type="text"
                   name="fileName"
                   value={formData.fileName}
@@ -326,7 +377,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
               )}
               {formData.filePreview && (
                 <div className="mt-3">
-                  <img 
+                  <img
                     src={formData.filePreview}
                     alt="File Preview"
                     className="max-h-40 object-contain mx-auto rounded-lg"
@@ -338,9 +389,9 @@ const AddCardForm = ({ onAddCard, onClose }) => {
 
           {/* Conditional Fields for Footer Description Tag */}
           {formData.footerDescriptionTag && (
-            <motion.div 
+            <motion.div
               variants={itemVariants}
-              initial="hidden" 
+              initial="hidden"
               animate="visible"
               className="p-3 border border-dashed border-purple-500/50 rounded-lg bg-gray-700/30"
             >
@@ -348,7 +399,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
                 <label className="block text-gray-300 font-semibold mb-1 pl-1">
                   Details (Max 20 characters)
                 </label>
-                <input 
+                <input
                   type="text"
                   name="details"
                   value={formData.details}
@@ -362,7 +413,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
               </div>
               <div className="mt-2">
                 <label className="block text-gray-300 font-semibold mb-1 pl-1">Date & Time</label>
-                <input 
+                <input
                   type="datetime-local"
                   name="dateTime"
                   value={formData.dateTime}
@@ -374,11 +425,11 @@ const AddCardForm = ({ onAddCard, onClose }) => {
           )}
 
           {/* Submit Button */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="pt-2"
           >
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               type="submit"
