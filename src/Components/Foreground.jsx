@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { FaAssistiveListeningSystems } from 'react-icons/fa';
+import { FaAssistiveListeningSystems, FaFileAlt, FaNotesMedical, FaBook, FaCalendarAlt } from 'react-icons/fa';
 import { IoAdd } from 'react-icons/io5';
 import Cards from './Cards';
 import AddCardForm from './AddCardForm';
@@ -9,11 +9,21 @@ const Foreground = () => {
   const ref = useRef(null);
   const [showForm, setShowForm] = useState(false);
   
+  // Icon mapping for easy reference
+  const iconMap = {
+    'FaFileAlt': FaFileAlt,
+    'FaNotesMedical': FaNotesMedical,
+    'FaBook': FaBook,
+    'FaCalendarAlt': FaCalendarAlt,
+    'FaAssistiveListeningSystems': FaAssistiveListeningSystems
+  };
+  
   // Initial cards with unique IDs
   const [cards, setCards] = useState([
     {
       id: 'card-' + Date.now() + '-1',
       title: 'Sample Card 1',
+      titleColor: 'green',
       description: 'This is sample card 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       icon: FaAssistiveListeningSystems,
       download: {
@@ -31,6 +41,7 @@ const Foreground = () => {
     {
       id: 'card-' + Date.now() + '-2',
       title: 'Sample Card 2',
+      titleColor: 'blue',
       description: 'This is sample card 2. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       icon: FaAssistiveListeningSystems,
       download: {
@@ -48,6 +59,7 @@ const Foreground = () => {
     {
       id: 'card-' + Date.now() + '-3',
       title: 'Sample Card 3',
+      titleColor: 'red',
       description: 'A comprehensive overview of the project with extended description showcasing multiple features.',
       icon: FaAssistiveListeningSystems,
       download: {
@@ -65,6 +77,7 @@ const Foreground = () => {
     {
       id: 'card-' + Date.now() + '-4',
       title: 'Sample Card 4',
+      titleColor: 'green',
       description: 'Exploring the intricacies of modern web development and design principles.',
       icon: FaAssistiveListeningSystems,
       download: {
@@ -89,15 +102,18 @@ const Foreground = () => {
     // Generate a unique ID using our function
     const newId = generateUniqueId();
     
-    // Add the default icon
-    newCard.icon = FaAssistiveListeningSystems;
+    // Select the icon based on iconType or use default
+    const selectedIcon = newCard.iconType 
+      ? iconMap[newCard.iconType] 
+      : FaAssistiveListeningSystems;
     
     // Transform newCard with the ID
     const card = {
       id: newId,
       title: newCard.title,
+      titleColor: newCard.titleColor || 'gray',
       description: newCard.description,
-      icon: newCard.icon,
+      icon: selectedIcon,
       download: newCard.upload
         ? {
             isOpen: true,

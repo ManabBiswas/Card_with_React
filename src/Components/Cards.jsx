@@ -126,14 +126,14 @@ const Cards = ({ data, onDelete, reference, index }) => {
 
       {/* Title with Icon */}
       <div className="flex items-start mb-3">
-        <span className={`text-3xl mr-3 ${data?.tag?.titleColor ? getIconColorClasses(data.tag.titleColor) : 'text-purple-600'}`}>
+      <span className={`text-3xl mr-3 ${getIconColorClasses(data.titleColor || 'default')}`}>
           {React.createElement(data.icon || 'div')}
         </span>
-        <h2 className={`text-lg font-semibold pr-8 ${data?.tag?.titleColor ? getTitleColorClasses(data.tag.titleColor) : 'text-white'}`}>
+        <h2 className={`text-lg font-semibold pr-8 ${getTitleColorClasses(data.titleColor || 'default')}`}>
           {data?.title || "Untitled"}
         </h2>
       </div>
-      <hr className="border-purple-500 my-2 opacity-50" />
+      <hr className={` border-t-3 rounded-full  ${getIconColorClasses(data.titleColor || 'default')}`}/>
 
       {/* Description */}
       <p className="text-gray-400 font-medium text-sm md:text-base mt-2 leading-tight transition-colors duration-300">

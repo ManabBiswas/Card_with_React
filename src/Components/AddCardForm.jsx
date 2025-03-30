@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaTimes } from "react-icons/fa";
-import {  FaFileAlt, FaNotesMedical, FaBook, FaCalendarAlt } from "react-icons/fa";
-
+import { FaFileAlt, FaNotesMedical, FaBook, FaCalendarAlt } from "react-icons/fa";
 
 // Helper function to format date for datetime-local inputs.
 const formatDateTimeLocal = (date) => {
@@ -20,11 +19,11 @@ const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 const AddCardForm = ({ onAddCard, onClose }) => {
   const [formData, setFormData] = useState({
-    // iconType: 'FaFileAlt', 
+    iconType: 'FaFileAlt',  // Set a default icon
     title: '',
-    titleColor: 'gray',
+    titleColor: 'green',
     description: '',
-    tagColor: 'gray',
+    tagColor: 'green',
     wantToUploadFile: false,
     footerDescriptionTag: false,
     fileName: '',
@@ -138,6 +137,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
       title: formData.title,
       titleColor: formData.titleColor,
       description: formData.description,
+      iconType: formData.iconType,
       tagColor: formData.tagColor,
       upload: formData.wantToUploadFile
         ? {
@@ -342,7 +342,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
               </label>
             </div>
           </motion.div>
-
+          
           {/* Conditional Fields for File Upload */}
           {formData.wantToUploadFile && (
             <motion.div
