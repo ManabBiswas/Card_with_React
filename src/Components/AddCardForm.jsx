@@ -190,7 +190,7 @@ const AddCardForm = ({ onAddCard, onClose }) => {
       >
         <div className="flex justify-between items-center mb-4">
           <motion.h2 
-            className="text-2xl font-bold text-white text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400"
+            className="text-2xl font-bold text-white text-center bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400"
             variants={itemVariants}
           >
             Add New Card
