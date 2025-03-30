@@ -52,7 +52,7 @@ const Cards = ({ data, onDelete, reference, index, dragVariants }) => {
       case 'red':
         return 'text-red-500';
       default:
-        return 'text-purple-600'; // Default icon color
+        return 'text-gray-300'; // Default icon color
     }
   };
   
@@ -85,7 +85,7 @@ const Cards = ({ data, onDelete, reference, index, dragVariants }) => {
       animate={isDeleting ? 'exit' : 'initial'}
       whileDrag="drag"
       whileHover="hover"
-      className="relative flex-shrink-0 m-2 bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl border border-gray-700 p-3 shadow-lg overflow-hidden cursor-grab active:cursor-grabbing w-60 h-80"
+      className="relative flex-shrink-0 m-2 bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl border border-gray-700 p-3 shadow-lg overflow-hidden cursor-grab active:cursor-grabbing w-60 h-80 z-10"
     >
       {/* Header: Delete Button */}
       <div>
@@ -123,14 +123,14 @@ const Cards = ({ data, onDelete, reference, index, dragVariants }) => {
         className={`absolute bottom-0 left-0 w-full p-2 ${
           data?.tag?.tagColor
             ? getTagColorClasses(data?.tag?.tagColor)
-            : getTagColorClasses('gray')
+            : getTagColorClasses('')
         } transition-opacity duration-300`}
       >
         {/* Tag Details */}
         {data?.tag?.isOpen && data?.tag?.tagDetails && data.tag.tagDetails.length > 0 && (
           <div className="text-center mb-2">
             {data.tag.tagDetails.map((detail, idx) => (
-              <p key={idx} className="text-gray-200 text-[12px] md:text-[14px] transition-colors">
+              <p key={idx} className="text-gray-100 text-[12px] md:text-[14px] transition-colors">
                 {detail}
               </p>
             ))}
@@ -159,14 +159,26 @@ const Cards = ({ data, onDelete, reference, index, dragVariants }) => {
                 </p>
               )}
             </div>
-            <button className={`w-8 h-8 bg-blue-100 ${
+            <motion.button
+             whileHover={{
+                scale: 1.1,
+              }}
+              whileTap={{
+                scale: 0.95,
+                
+              }}
+              onClick={() => {
+                // Simulate downloading the file
+                console.log('Downloading file...');
+              }}
+             className={`w-8 h-8 bg-blue-100 ${
               data?.tag?.tagColor
                 ? getDownloadBtnColorClasses(data?.tag?.tagColor)
-                : getDownloadBtnColorClasses('gray')
-            } rounded-full flex items-center justify-center`}
+                : getDownloadBtnColorClasses('')
+            } rounded-full flex items-center justify-center hover:cursor-pointer`}
             aria-labelledby="download-file-label">
               <FaDownload />
-            </button>
+            </motion.button>
           </div>
         )}
       </div>

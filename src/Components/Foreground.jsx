@@ -45,7 +45,6 @@ const Foreground = () => {
     {
       id: 'card-' + crypto.randomUUID(), // Use crypto for unique ID generation
       title: 'Sample Card 1',
-      titleColor: 'green',
       description: 'This is sample card 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       icon: FaFileAlt,
       download: {
@@ -99,7 +98,6 @@ const Foreground = () => {
     {
       id: 'card-' + crypto.randomUUID(),
       title: 'Sample Card 4',
-      titleColor: 'green',
       description: 'Exploring the intricacies of modern web development and design principles.',
       icon: FaCalendarAlt,
       download: {
@@ -140,7 +138,7 @@ const Foreground = () => {
             new Date(newCard.footerDetails.dateTime).toLocaleString(),
           ]
           : [],
-        tagColor: newCard.tagColor || 'green',
+        tagColor: newCard.tagColor || 'gray',
       },
     };
 

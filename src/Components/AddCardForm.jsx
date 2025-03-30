@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaTimes } from "react-icons/fa";
 import { FaFileAlt, FaNotesMedical, FaBook, FaCalendarAlt } from "react-icons/fa";
@@ -21,9 +21,9 @@ const AddCardForm = ({ onAddCard, onClose }) => {
   const [formData, setFormData] = useState({
     iconType: 'FaFileAlt',  // Set a default icon
     title: '',
-    titleColor: 'green',
+    titleColor: '',
     description: '',
-    tagColor: 'green',
+    tagColor: '',
     wantToUploadFile: false,
     footerDescriptionTag: false,
     fileName: '',
@@ -34,6 +34,27 @@ const AddCardForm = ({ onAddCard, onClose }) => {
   });
 
   const [errors, setErrors] = useState({});
+  
+  // Create a ref for the form container
+  const formRef = useRef(null);
+
+  // Handle click outside the form
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Check if the form ref exists and if the click is outside the form
+      if (formRef.current && !formRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+    
+    // Add event listener when component mounts
+    document.addEventListener('mousedown', handleClickOutside);
+    
+    // Clean up event listener when component unmounts
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
 
   const icons = {
     FaFileAlt: FaFileAlt,
@@ -191,10 +212,10 @@ const AddCardForm = ({ onAddCard, onClose }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-transparent 50 backdrop-blur-sm "
-      
+      className="fixed inset-0 z-50 flex items-center justify-center bg-transparent 50 backdrop-blur-sm"
     >
       <motion.div
+        ref={formRef}
         className="bg-gray-800 rounded-2xl p-6 w-full max-w-md mx-4 my-6 border-2 border-purple-700 shadow-xl max-h-[90vh] overflow-y-auto scrollbar-styled"
         variants={formVariants}
         initial="hidden"
