@@ -54,7 +54,7 @@ const Foreground = () => {
       },
       tag: {
         isOpen: false,
-        tagDetails: ['Created by: Sample User', 'Last updated: 28/03/2025'],
+        tagDetails: ['Created by: Manab Biswas', 'Last updated: 28/03/2025'],
         tagColor: 'green',
       },
     },
@@ -73,7 +73,7 @@ const Foreground = () => {
       },
       tag: {
         isOpen: false,
-        tagDetails: ['Created by: Sample User', 'Last updated: 28/03/2025'],
+        tagDetails: ['Created by: Manab Biswas', 'Last updated: 28/03/2025'],
         tagColor: 'red',
       },
     },
@@ -91,7 +91,7 @@ const Foreground = () => {
       },
       tag: {
         isOpen: false,
-        tagDetails: ['Created by: Sample User', 'Last updated: 28/03/2025'],
+        tagDetails: ['Created by: Manab Biswas', 'Last updated: 28/03/2025'],
         tagColor: 'blue',
       },
     },
@@ -107,7 +107,7 @@ const Foreground = () => {
       },
       tag: {
         isOpen: true,
-        tagDetails: ['Created by: Sample User', 'Last updated: 28/03/2025'],
+        tagDetails: ['Created by: Manab Biswas', 'Last updated: 01/04/2025'],
         tagColor: '',
       },
     },
@@ -156,8 +156,9 @@ const Foreground = () => {
       {/* Cards List */}
       <div
         ref={ref}
-        className="fixed top-0 left-0 z-10 w-full h-full flex gap-5 flex-wrap p-3 md:p-5 overflow-y-auto"
+        className="fixed top-0 left-0 z-10 w-full h-full flex gap-5 flex-wrap p-3 md:p-5 overflow-y-auto overflow-x-hidden"
       >
+        <div className="h-0 bg-amber-50 w-full"></div>
         <AnimatePresence>
           {cards.map((item) => (
             <Cards

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const Background = () => {
   return (
-    <div className="w-full h-screen bg-zinc-600 overflow-hidden">
+    <div className="w-full h-screen bg-zinc-600 ">
       <motion.div 
         className="flex justify-center items-center h-full"
         initial={{ opacity: 0, scale: 0.9 }}
